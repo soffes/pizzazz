@@ -1,0 +1,22 @@
+pre.pizzazz {
+  border-radius: 5px;
+  background: #f7f7f7;
+  padding: 0.5em;
+  margin-bottom: 2em;
+  border: 1px solid #ddd;
+}
+
+pre.pizzazz span.string {
+  color: #ee6132;
+}
+
+pre.pizzazz span.null, 
+pre.pizzazz span.number, 
+pre.pizzazz span.constant {
+  color: #8e75c3;
+}
+
+pre.pizzazz span.comment {
+  color: #999;
+  font-style: italic;
+}

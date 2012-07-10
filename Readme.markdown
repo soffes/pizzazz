@@ -31,36 +31,17 @@ Spans are added around various elements. Here's the classes:
 * `null`
 * `number`
 
-Everything else is left alone. It is recommended to wrap the output like this:
+Everything else is left alone.
 
-``` html
-<pre><%= Pizzazz.ify(object).html_safe %></pre>
+If you want it wrapped in `<pre class="pizzazz">` (and call `html_safe` if possible), do the following:
+
+``` ruby
+Pizzazz.ify_html(object)
 ```
 
-Here's my stylesheet if you're interested:
+### Stylesheet
 
-``` css
-pre {
-  border-radius: 5px;
-  background: #f7f7f7;
-  padding: 0.5em;
-  margin-bottom: 2em;
-  border: 1px solid #ddd;
-}
-
-.string {
-  color: #ee6132;
-}
-
-.null, .number, .constant {
-  color: #8e75c3;
-}
-
-.comment {
-  color: #999;
-  font-style: italic;
-}
-```
+If you're using the asset pipeline, you can simply require `pizzazz` to get my stylesheet. Be sure your `<pre>` has the `pizzazz` class. If you use `ify_html` it will automatically do this.
 
 ## Installation
 
