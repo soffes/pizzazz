@@ -30,7 +30,7 @@ private
     when FalseClass
       %Q{<span class="constant">false</span>}
     when NilClass
-      %Q{<span class="constant">null</span>}
+      %Q{<span class="null">null</span>}
     when Numeric
       %Q{<span class="number">#{object}</span>}
     when Hash
