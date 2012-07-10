@@ -2,6 +2,8 @@
 
 Pizzazz is a simple pure Ruby implementation of code coloring, but just for JSON. Basically, if you have a ruby object and want to show it converted to JSON and add HTML around it so you can color it.
 
+[Cheddar](http://cheddarapp.com) uses this to show example output of it's API calls. [Check it out](https://cheddarapp.com/developer/lists).
+
 ## Usage
 
 Pizzazzifing an object is simple:
@@ -25,7 +27,7 @@ This will add an ellipses after the first element.
 Spans are added around various elements. Here's the classes:
 
 * `string`
-* `constant` (for `true` or `false`
+* `constant` (`true` or `false`)
 * `null`
 * `number`
 
