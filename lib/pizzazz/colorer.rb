@@ -11,6 +11,7 @@ module Pizzazz
     end
   
     def ify
+      return '' unless @object
       node(@object, @limit)
     end
   
