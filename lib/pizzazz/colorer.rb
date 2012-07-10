@@ -1,12 +1,9 @@
 # encoding: UTF-8
+require 'erb'
 
-class Pizzazz
-  def self.ify(object, options = nil)
-    p = self.new(object, options)
-    p.ify
-  end
-
-  def initialize(object, options = {})
+class Pizzazz::Colorer
+  def initialize(object, options = nil)
+    options ||= {}
     @object = object
     @indent = 0
     @limit = (options[:limit] or 0)
@@ -19,13 +16,13 @@ class Pizzazz
 private
 
   def tab
-    " " * @indent * TAB_SIZE
+    " " * @indent * Pizzazz::TAB_SIZE
   end
 
   def node(object, limit = 0)
     case object
     when String
-      %Q{<span class="string">"#{ERB::Util.h(object)}"</span>}
+      %Q{<span class="string">"#{::ERB::Util.h(object)}"</span>}
     when Time
       %Q{<span class="string">#{object.to_json}</span>}
     when TrueClass
@@ -38,14 +35,14 @@ private
       %Q{<span class="number">#{object}</span>}
     when Hash
       s = "{\n"
-      @indent += TAB_SIZE
+      @indent += 1
       rows = []
       object.keys.collect(&:to_s).sort.each do |key|
         value = (object[key] != nil ? object[key] : object[key.to_sym])
         rows << %Q{#{tab}<span class="string">"#{key}"</span>: #{node(value)}}
       end
       s << rows.join(",\n") + "\n"
-      @indent -= TAB_SIZE
+      @indent -= 1
       s << "#{tab}}"      
       s
     when Array
@@ -53,7 +50,7 @@ private
         "[]"
       else
         s = "[\n"
-        @indent += TAB_SIZE
+        @indent += 1
         rows = []
         array = @limit > 0 ? object[0...limit] : object
         array.each do |value|
@@ -65,7 +62,7 @@ private
         end
 
         s << rows.join(",\n") + "\n"
-        @indent -= TAB_SIZE
+        @indent -= 1
         s << "#{tab}]"
         s
       end
