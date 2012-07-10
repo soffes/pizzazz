@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# encoding: UTF-8
 require File.expand_path('../lib/pizzazz/version', __FILE__)
 
 Gem::Specification.new do |gem|
@@ -14,6 +14,4 @@ Gem::Specification.new do |gem|
   gem.name          = 'pizzazz'
   gem.require_paths = ['lib']
   gem.version       = Pizzazz::VERSION
-  
-  gem.add_development_dependency 'rake'
 end
