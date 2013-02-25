@@ -1,8 +1,11 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in pizzazz.gemspec
 gemspec
 
-gem 'rake'
-gem 'minitest'
-gem 'minitest-wscolor'
+gem 'rake', :group => [:development, :test]
+
+group :test do
+  gem 'minitest'
+  gem 'minitest-wscolor' if RUBY_VERSION >= '1.9.3'
+  gem 'simplecov', :require => false
+end
