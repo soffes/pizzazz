@@ -69,7 +69,6 @@ If you're using the asset pipeline, you can simply require `pizzazz` to get my s
 
 Pizzazz is tested under 1.8.7, 1.9.2, 1.9.3, 2.0.0, JRuby 1.7.2 (1.9 mode), and Rubinius 2.0.0 (1.9 mode).
 
-[![Build Status](https://travis-ci.org/soffes/pizzazz.png?branch=master)](https://travis-ci.org/soffes/pizzazz)
 
 ## Contributing
 
