@@ -16,5 +16,5 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version       = Pizzazz::VERSION
 
-  gem.required_ruby_version = '>= 1.8.7'
+  gem.required_ruby_version = '>= 1.9.2'
 end
