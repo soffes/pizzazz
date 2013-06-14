@@ -7,24 +7,35 @@ module Pizzazz
       options ||= {}
       @object = object
       @indent = 0
-      @limit = (options[:limit] or 0)
+      @array_limit = options[:array_limit] || options[:limit] || 0
+      @array_omission = options[:array_omission] || '…'
+      @value_limit = options[:value_limit] || 0
+      @value_omission = options[:value_omission] || '…'
+      @tab = options[:tab] || '  '
     end
-  
+
     def ify
       return '' unless @object
-      node(@object, @limit)
+      node(@object)
     end
-  
+
   private
-  
+
     def tab
-      " " * @indent * Pizzazz::TAB_SIZE
+      @tab * @indent
     end
-  
-    def node(object, limit = 0)
+
+    def truncate(string)
+      return string if @value_limit < 1
+      text = string.dup
+      stop = @value_limit - @value_omission.length
+      (text.length > @value_limit ? text[0...stop] + @value_omission : text).to_s
+    end
+
+    def node(object)
       case object
       when String
-        %Q{<span class="string">"#{::ERB::Util.h(object)}"</span>}
+        %Q{<span class="string">"#{truncate(::ERB::Util.h(object))}"</span>}
       when Time
         %Q{<span class="string">#{object.to_json}</span>}
       when TrueClass
@@ -41,11 +52,11 @@ module Pizzazz
         rows = []
         object.keys.collect(&:to_s).sort.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
-          rows << %Q{#{tab}<span class="string">"#{key}"</span>: #{node(value)}}
+          rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
         end
         s << rows.join(",\n") + "\n"
         @indent -= 1
-        s << "#{tab}}"      
+        s << "#{tab}}"
         s
       when Array
         if object.length == 0
@@ -54,15 +65,15 @@ module Pizzazz
           s = "[\n"
           @indent += 1
           rows = []
-          array = @limit > 0 ? object[0...limit] : object
+          array = @array_limit > 0 ? object[0...@array_limit] : object
           array.each do |value|
             rows << tab + node(value)
           end
-  
-          if limit > 0 and object.length > limit
-            rows << tab + (object[0].is_a?(Hash) ? '{ … }' : '…')
+
+          if @array_limit > 0 and object.length > @array_limit
+            rows << tab + (object[0].is_a?(Hash) ? "{ #{@array_omission} }" : @array_omission)
           end
-  
+
           s << rows.join(",\n") + "\n"
           @indent -= 1
           s << "#{tab}]"

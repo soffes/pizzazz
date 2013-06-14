@@ -35,13 +35,18 @@ Pizzazz.ify(object)
 #=> "{\n  <span class=\"string\">\"name\"</span>: <span class=\"string\">\"Sam Soffes\"</span>,\n  <span class=\"string\">\"website\"</span>: <span class=\"string\">\"http://samsoff.es\"</span>\n}"
 ```
 
-You can optionally limit arrays as well:
+You can optionally limit arrays or values as well:
 
 ``` ruby
-Pizzazz.ify(all_of_the_things, limit: 1)
+Pizzazz.ify(all_of_the_things, array_limit: 1, value_limit: 100)
 ```
 
-This will add an ellipses after the first element.
+This will add an ellipses after the first element and truncate values longer than 100 characters. You can replace the ellipses by setting the `array_omission` and then `value_omission` options:
+
+``` ruby
+Pizzazz.ify(all_of_the_things, array_limit: 'etc', value_omission: '... (continued)')
+```
+
 
 ### HTML
 

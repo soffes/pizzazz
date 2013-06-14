@@ -2,8 +2,47 @@ require 'test_helper'
 
 class TestColorer < Pizzazz::TestCase
   def test_that_it_colors_hashes
-    assert_equal Pizzazz.ify({:foo => 'bar'}), %Q{{\n  <span class="string">"foo"</span>: <span class="string">"bar"</span>\n}}
+    colored = Pizzazz.ify({:foo => 'bar'})
+    assert_equal colored, %Q{{
+  <span class="string key">"foo"</span>: <span class="string">"bar"</span>
+}}
   end
 
-  # TODO: These need to be expanded
+  def test_tabs
+    colored = Pizzazz.ify({:foo => 'bar'}, tab: '||||')
+    assert_equal colored, %Q{{
+||||<span class="string key">"foo"</span>: <span class="string">"bar"</span>
+}}
+  end
+
+  def test_that_it_truncates_arrays
+    colored = Pizzazz.ify({:numbers => [1, 2, 3]}, :array_limit => 2)
+    assert_equal colored, %Q{{
+  <span class=\"string key\">\"numbers\"</span>: [
+    <span class=\"number\">1</span>,
+    <span class=\"number\">2</span>,
+    …
+  ]
+}}
+
+    colored = Pizzazz.ify({:numbers => [1, 2, 3]}, :array_limit => 1, :array_omission => 'hello')
+    assert_equal colored, %Q{{
+  <span class=\"string key\">\"numbers\"</span>: [
+    <span class=\"number\">1</span>,
+    hello
+  ]
+}}
+  end
+
+  def test_that_it_truncates_values
+    colored = Pizzazz.ify({:wooden => 'baseball bat'}, :value_limit => 5)
+    assert_equal colored, %Q{{
+  <span class="string key">"wooden"</span>: <span class="string">"base…"</span>
+}}
+
+    colored = Pizzazz.ify({:wooden => 'baseball bat'}, :value_limit => 9, :value_omission => '!')
+    assert_equal colored, %Q{{
+  <span class="string key">"wooden"</span>: <span class="string">"baseball!"</span>
+}}
+  end
 end

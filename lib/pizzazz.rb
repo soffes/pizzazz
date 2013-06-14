@@ -1,6 +1,4 @@
 module Pizzazz
-  TAB_SIZE = 2
-
   def self.ify(object, options = nil)
     p = Colorer.new(object, options)
     p.ify
