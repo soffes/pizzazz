@@ -47,20 +47,24 @@ module Pizzazz
       when Numeric
         %Q{<span class="number">#{object}</span>}
       when Hash
-        s = "{\n"
-        @indent += 1
-        rows = []
-        object.keys.collect(&:to_s).sort.each do |key|
-          value = (object[key] != nil ? object[key] : object[key.to_sym])
-          rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
+        if object.length == 0
+          '{}'
+        else
+          s = "{\n"
+          @indent += 1
+          rows = []
+          object.keys.collect(&:to_s).sort.each do |key|
+            value = (object[key] != nil ? object[key] : object[key.to_sym])
+            rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
+          end
+          s << rows.join(",\n") + "\n"
+          @indent -= 1
+          s << "#{tab}}"
+          s
         end
-        s << rows.join(",\n") + "\n"
-        @indent -= 1
-        s << "#{tab}}"
-        s
       when Array
         if object.length == 0
-          "[]"
+          '[]'
         else
           s = "[\n"
           @indent += 1
