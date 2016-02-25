@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require File.expand_path('../lib/pizzazz/version', __FILE__)
 
 Gem::Specification.new do |gem|
