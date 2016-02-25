@@ -71,7 +71,7 @@ If you're using the asset pipeline, you can simply require `pizzazz` to get my s
 
 ## Supported Ruby Versions
 
-Pizzazz is tested under 1.9.2, 1.9.3, 2.0.0, JRuby 1.7.2 (1.9 mode), and Rubinius 2.0.0 (1.9 mode).
+Pizzazz is tested under 1.9.2, 1.9.3, 2.0.0, 2.2.4, JRuby 1.7.2 (1.9 mode), and Rubinius 2.0.0 (1.9 mode).
 
 
 ## Contributing
