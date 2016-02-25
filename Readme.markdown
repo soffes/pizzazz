@@ -4,7 +4,6 @@
 
 Pizzazz is a simple pure Ruby implementation of code coloring, but just for JSON. Basically, if you have a ruby object and want to show it converted to JSON and add HTML around it so you can color it.
 
-[Cheddar](http://cheddarapp.com) uses this to show example output of it's API calls. [Check it out](https://cheddarapp.com/developer/lists).
 
 ## Installation
 
@@ -30,9 +29,9 @@ Simple as that.
 Pizzazzifing an object is simple:
 
 ``` ruby
-object = { name: 'Sam Soffes', website: 'http://samsoff.es' }
+object = { name: 'Sam Soffes', website: 'http://soff.es' }
 Pizzazz.ify(object)
-#=> "{\n  <span class=\"string\">\"name\"</span>: <span class=\"string\">\"Sam Soffes\"</span>,\n  <span class=\"string\">\"website\"</span>: <span class=\"string\">\"http://samsoff.es\"</span>\n}"
+#=> "{\n  <span class=\"string key\">\"name\"</span>: <span class=\"string\">\"Sam Soffes\"</span>,\n  <span class=\"string key\">\"website\"</span>: <span class=\"string\">\"http://soff.es\"</span>\n}"
 ```
 
 You can optionally limit arrays or values as well:

@@ -1,12 +1,11 @@
-# encoding: UTF-8
 require File.expand_path('../lib/pizzazz/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ['Sam Soffes']
-  gem.email         = ['sam@samsoff.es']
+  gem.email         = ['sam@soff.es']
   gem.description   = %q{Add some pizzazz to your documentation}
   gem.summary       = %q{A simple gem to code color documentation}
-  gem.homepage      = 'http://github.com/samsoffes/pizzazz'
+  gem.homepage      = 'http://github.com/soffes/pizzazz'
   gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($\)
