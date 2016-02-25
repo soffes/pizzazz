@@ -1,6 +1,6 @@
 # Pizzazz
 
-[![Build Status](https://travis-ci.org/soffes/pizzazz.png?branch=master)](https://travis-ci.org/soffes/pizzazz) [![Coverage Status](https://coveralls.io/repos/soffes/pizzazz/badge.png?branch=master)](https://coveralls.io/r/soffes/pizzazz) [![Code Climate](https://codeclimate.com/github/soffes/pizzazz.png)](https://codeclimate.com/github/soffes/pizzazz) [![Dependency Status](https://gemnasium.com/soffes/pizzazz.png)](https://gemnasium.com/soffes/pizzazz) [![Gem Version](https://badge.fury.io/rb/pizzazz.png)](http://badge.fury.io/rb/pizzazz)
+[![Build Status](https://travis-ci.org/soffes/pizzazz.png?branch=master)](https://travis-ci.org/soffes/pizzazz) [![Test Coverage](https://codeclimate.com/github/soffes/pizzazz/badges/coverage.svg)](https://codeclimate.com/github/soffes/pizzazz/coverage) [![Code Climate](https://codeclimate.com/github/soffes/pizzazz.png)](https://codeclimate.com/github/soffes/pizzazz) [![Dependency Status](https://gemnasium.com/soffes/pizzazz.png)](https://gemnasium.com/soffes/pizzazz) [![Gem Version](https://badge.fury.io/rb/pizzazz.png)](http://badge.fury.io/rb/pizzazz)
 
 Pizzazz is a simple pure Ruby implementation of code coloring, but just for JSON. Basically, if you have a ruby object and want to show it converted to JSON and add HTML around it so you can color it.
 

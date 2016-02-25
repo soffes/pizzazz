@@ -2,10 +2,7 @@ require 'rubygems'
 require 'bundler'
 Bundler.require :test
 
-require 'coveralls'
-Coveralls.wear!
-
-require 'simplecov'
+CodeClimate::TestReporter.start
 SimpleCov.start
 
 require 'minitest/autorun'
