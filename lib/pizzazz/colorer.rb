@@ -90,7 +90,12 @@ module Pizzazz
 
         keys.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
-          rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
+          row = %Q{<span class="string key">"#{key}"</span>: #{node(value)}}
+
+          # Hopefully most keys will be sane since there are probably JSON
+          %Q{<div class="key-#{key}">#{row}</div>}
+
+          rows << tab + row
         end
         string << rows.join(",\n")
 
