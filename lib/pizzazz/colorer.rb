@@ -31,6 +31,8 @@ module Pizzazz
 
   private
 
+    URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
+
     def tab
       @tab * @indent
     end
@@ -47,7 +49,11 @@ module Pizzazz
 
       case object
       when String
-        %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
+        if URL_PATTERN.match object
+          %Q{<span class="string link"><a href="#{object}" rel="external">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</a></span>}
+        else
+          %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
+        end
 
       when Time
         %Q{<span class="string">#{object.to_json}</span>}

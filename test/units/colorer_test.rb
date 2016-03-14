@@ -70,4 +70,11 @@ class TestColorer < Pizzazz::TestCase
   <span class="string key">"wooden"</span>: <span class="string">"baseball!"</span>
 }}
   end
+
+  def test_link
+    colored = Pizzazz.ify({:website => 'http://soff.es'})
+    assert_equal colored, %q{{
+  <span class="string key">"website"</span>: <span class="string link"><a href="http://soff.es" rel="external">"http://soff.es"</a></span>
+}}
+  end
 end
