@@ -47,7 +47,7 @@ module Pizzazz
 
       case object
       when String
-        %Q{<span class="string">"#{truncate(::ERB::Util.h(object))}"</span>}
+        %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
 
       when Time
         %Q{<span class="string">#{object.to_json}</span>}
