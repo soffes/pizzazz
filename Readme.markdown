@@ -48,6 +48,15 @@ Pizzazz.ify(all_of_the_things, array_limit: 'etc', value_omission: '... (continu
 
 You can also supply `omit_root_container` and `prefix`, a string that's added to the beginning of each line of the output, is really nice for doing custom things. Both options can be used independently as well.
 
+If you'd like to customize the order of the keys in the output, you can specify a callable like this:
+
+```ruby
+Pizzazz.ify all_of_the_things, :key_orderer => Proc.new { |keys|
+  return ['id', 'title']
+}
+```
+
+Any remaining keys you don't return from the orderer will be added at the end in alphabetical order. If you don't specify an orderer, all keys will be added in alphabetical order.
 
 ### HTML
 

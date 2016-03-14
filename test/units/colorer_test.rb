@@ -77,9 +77,27 @@ class TestColorer < Pizzazz::TestCase
   <span class="string key">"website"</span>: <span class="string link"><a href="http://soff.es" rel="external">"http://soff.es"</a></span>
 }}
 
-    colored = Pizzazz.ify({:website => 'http://soff.es'}, detect_links: false)
+    colored = Pizzazz.ify({:website => 'http://soff.es'}, :detect_links => false)
     assert_equal colored, %q{{
   <span class="string key">"website"</span>: <span class="string">"http://soff.es"</span>
+}}
+  end
+
+  def test_key_order
+    colored = Pizzazz.ify({:content => 'Hello', :type => 'Message'})
+    assert_equal colored, %q{{
+  <span class="string key">"content"</span>: <span class="string">"Hello"</span>,
+  <span class="string key">"type"</span>: <span class="string">"Message"</span>
+}}
+
+    colored = Pizzazz.ify({:content => 'Hello', :type => 'Message', :b => 'foo', :a => 'bar'}, :key_orderer => Proc.new { |keys|
+      return ['type', 'content']
+    })
+    assert_equal colored, %q{{
+  <span class="string key">"content"</span>: <span class="string">"Hello"</span>,
+  <span class="string key">"type"</span>: <span class="string">"Message"</span>
+  <span class="string key">"a"</span>: <span class="string">"bar"</span>
+  <span class="string key">"b"</span>: <span class="string">"foo"</span>
 }}
   end
 end

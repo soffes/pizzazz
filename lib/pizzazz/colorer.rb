@@ -16,6 +16,7 @@ module Pizzazz
       @prefix = options[:prefix]
       @omit_root_container = options[:omit_root_container] || false
       @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
+      @key_orderer = options[:key_orderer]
     end
 
     def ify
@@ -82,7 +83,17 @@ module Pizzazz
         end
 
         rows = []
-        object.keys.collect(&:to_s).sort.each do |key|
+        keys = object.keys.collect(&:to_s)
+
+        if @key_orderer
+          updated_keys = @key_orderer.call(keys)
+          remaining_keys = keys - updated_keys
+          keys = updated_keys + remaining_keys.sort
+        else
+          keys.sort!
+        end
+
+        keys.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
           rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
         end
