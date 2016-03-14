@@ -17,6 +17,21 @@ class TestColorer < Pizzazz::TestCase
 }}
   end
 
+  def test_prefix
+    colored = Pizzazz.ify({:foo => 'bar'}, prefix: '**')
+    assert_equal colored, %Q{**{
+**  <span class="string key">"foo"</span>: <span class="string">"bar"</span>
+**}}
+  end
+
+  def test_omit_root_container
+    colored = Pizzazz.ify({:foo => 'bar'}, omit_root_container: true)
+    assert_equal colored, %Q{<span class="string key">"foo"</span>: <span class="string">"bar"</span>}
+
+    colored = Pizzazz.ify([1, 2], omit_root_container: true)
+    assert_equal colored, %Q{<span class="number">1</span>,\n<span class="number">2</span>}
+  end
+
   def test_that_it_truncates_arrays
     colored = Pizzazz.ify({:numbers => [1, 2, 3]}, :array_limit => 2)
     assert_equal colored, %Q{{

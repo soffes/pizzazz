@@ -46,6 +46,8 @@ This will add an ellipses after the first element and truncate values longer tha
 Pizzazz.ify(all_of_the_things, array_limit: 'etc', value_omission: '... (continued)')
 ```
 
+You can also supply `omit_root_container` and `prefix`, a string that's added to the beginning of each line of the output, is really nice for doing custom things. Both options can be used independently as well.
+
 
 ### HTML
 

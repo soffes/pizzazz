@@ -5,6 +5,8 @@ Bundler.require :test
 CodeClimate::TestReporter.start
 SimpleCov.start
 
+Minitest::Reporters.use! Minitest::Reporters::DefaultReporter.new
+
 require 'minitest/autorun'
 require 'pizzazz'
 
