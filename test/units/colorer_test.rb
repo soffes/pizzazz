@@ -76,5 +76,10 @@ class TestColorer < Pizzazz::TestCase
     assert_equal colored, %q{{
   <span class="string key">"website"</span>: <span class="string link"><a href="http://soff.es" rel="external">"http://soff.es"</a></span>
 }}
+
+    colored = Pizzazz.ify({:website => 'http://soff.es'}, detect_links: false)
+    assert_equal colored, %q{{
+  <span class="string key">"website"</span>: <span class="string">"http://soff.es"</span>
+}}
   end
 end

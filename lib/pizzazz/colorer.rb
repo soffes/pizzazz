@@ -15,6 +15,7 @@ module Pizzazz
       @tab = options[:tab] || '  '
       @prefix = options[:prefix]
       @omit_root_container = options[:omit_root_container] || false
+      @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
     end
 
     def ify
@@ -49,7 +50,7 @@ module Pizzazz
 
       case object
       when String
-        if URL_PATTERN.match object
+        if @detect_links && URL_PATTERN.match(object)
           %Q{<span class="string link"><a href="#{object}" rel="external">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</a></span>}
         else
           %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}

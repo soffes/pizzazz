@@ -66,6 +66,9 @@ If you want it wrapped in `<pre class="pizzazz">` (and call `html_safe` if possi
 Pizzazz.ify_html(object)
 ```
 
+By default, Pizzazz will convert any links starting with `http` to `<a>` tags. You can disable this by passing `detect_links: false`.
+
+
 ### Stylesheet
 
 If you're using the asset pipeline, you can simply require `pizzazz` to get my stylesheet. Be sure your `<pre>` has the `pizzazz` class. If you use `ify_html` it will automatically do this.
@@ -73,7 +76,7 @@ If you're using the asset pipeline, you can simply require `pizzazz` to get my s
 
 ## Supported Ruby Versions
 
-Pizzazz is tested under 1.9.2, 2.0.0, 2.2.4, JRuby 1.7.2 (1.9 mode), and Rubinius 2.0.0 (1.9 mode).
+Pizzazz is tested under 2.0.0, 2.2.4, JRuby 1.7.2 (1.9 mode), and Rubinius 2.0.0 (1.9 mode).
 
 
 ## Contributing
