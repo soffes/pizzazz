@@ -83,21 +83,17 @@ class TestColorer < Pizzazz::TestCase
 }}
   end
 
-  def test_key_order
-    colored = Pizzazz.ify({:content => 'Hello', :type => 'Message'})
+  def test_sort_keys
+    colored = Pizzazz.ify({:b => 'foo', :a => 'bar'})
     assert_equal colored, %q{{
-  <span class="string key">"content"</span>: <span class="string">"Hello"</span>,
-  <span class="string key">"type"</span>: <span class="string">"Message"</span>
+  <span class="string key">"b"</span>: <span class="string">"foo"</span>,
+  <span class="string key">"a"</span>: <span class="string">"bar"</span>
 }}
 
-    colored = Pizzazz.ify({:content => 'Hello', :type => 'Message', :b => 'foo', :a => 'bar'}, :key_orderer => Proc.new { |keys|
-      return ['type', 'content']
-    })
+    colored = Pizzazz.ify({:b => 'foo', :a => 'bar'}, :sort_keys => true)
     assert_equal colored, %q{{
-  <span class="string key">"content"</span>: <span class="string">"Hello"</span>,
-  <span class="string key">"type"</span>: <span class="string">"Message"</span>
+  <span class="string key">"b"</span>: <span class="string">"foo"</span>,
   <span class="string key">"a"</span>: <span class="string">"bar"</span>
-  <span class="string key">"b"</span>: <span class="string">"foo"</span>
 }}
   end
 end
