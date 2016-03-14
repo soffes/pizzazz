@@ -48,7 +48,7 @@ Pizzazz.ify(all_of_the_things, array_limit: 'etc', value_omission: '... (continu
 
 You can also supply `omit_root_container` and `prefix`, a string that's added to the beginning of each line of the output, is really nice for doing custom things. Both options can be used independently as well.
 
-You can optionally add `sort_keys: true` if you just to sort hash keys alphabetically.
+By defauly, hash keys are sorted alphabetically. You can disable this with `sort_keys: false`.
 
 
 ### HTML
