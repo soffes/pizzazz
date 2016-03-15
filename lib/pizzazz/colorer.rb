@@ -53,7 +53,7 @@ module Pizzazz
       case object
       when String
         if @detect_links && is_link?(object)
-          %Q{<span class="string link"><a href="#{object}" rel="external"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></a></span>}
+          %Q{<span class="string link"><a href="#{object}" rel="external"><span class="quote opening">"</span><span class="text">#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}</span><span class="quote closing">"</span></a></span>}
         else
           %Q{<span class="string"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></span>}
         end
