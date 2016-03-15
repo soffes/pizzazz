@@ -93,7 +93,7 @@ module Pizzazz
           row = %Q{<span class="string key">"#{key}"</span>: #{node(value)}}
 
           # Hopefully most keys will be sane since there are probably JSON
-          %Q{<div class="key-#{key}">#{row}</div>}
+          row = %Q{<div class="key-#{key}">#{row}</div>}
 
           rows << tab + row
         end
