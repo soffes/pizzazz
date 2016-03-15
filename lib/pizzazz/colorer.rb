@@ -112,7 +112,7 @@ module Pizzazz
           ''
         else
           @indent += 1
-          "<span class="square-bracket opening">[</span>\n"
+          %Q{<span class="square-bracket opening">[</span>\n}
         end
 
         rows = []
