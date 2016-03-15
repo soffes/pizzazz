@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'erb'
+require 'uri'
 
 module Pizzazz
   class Colorer
@@ -51,7 +52,7 @@ module Pizzazz
 
       case object
       when String
-        if @detect_links && URL_PATTERN.match(object)
+        if @detect_links && is_link?(object)
           %Q{<span class="string link"><a href="#{object}" rel="external">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</a></span>}
         else
           %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
@@ -128,6 +129,13 @@ module Pizzazz
 
         string
       end
+    end
+
+    def is_link?(string)
+      scheme = URI.parse(string).scheme
+      scheme == 'http' || scheme == 'https'
+    rescue
+      false
     end
   end
 end
