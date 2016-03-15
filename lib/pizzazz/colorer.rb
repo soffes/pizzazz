@@ -16,7 +16,7 @@ module Pizzazz
       @prefix = options[:prefix]
       @omit_root_container = options[:omit_root_container] || false
       @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
-      @sort_keys = options[:detect_links] == nil ? true : options[:sort_keys]
+      @sort_keys = options[:sort_keys] == nil ? true : options[:sort_keys]
     end
 
     def ify
