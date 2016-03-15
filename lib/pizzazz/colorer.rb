@@ -37,7 +37,7 @@ module Pizzazz
     URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
 
     def tab
-      %Q{<span class="tab">#{@tab * @indent}</span>}
+      %Q{<span class="control tab">#{@tab * @indent}</span>}
     end
 
     def truncate(string)
@@ -74,13 +74,13 @@ module Pizzazz
         %Q{<span class="number">#{object}</span>}
 
       when Hash
-        return omit_container ? '' : '<span class="curly-bracket opening">{</span><span class="curly-bracket closing">}</span>' if object.length == 0
+        return omit_container ? '' : '<span class="control curly-bracket opening">{</span><span class="control curly-bracket closing">}</span>' if object.length == 0
 
         string = if omit_container
           ''
         else
           @indent += 1
-          %Q[<span class="curly-bracket opening">{</span>\n]
+          %Q[<span class="control curly-bracket opening">{</span>\n]
         end
 
         rows = []
@@ -90,29 +90,29 @@ module Pizzazz
 
         keys.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
-          row = %Q{<span class="string key"><span class="quote opening">"</span>#{key}<span class="quote closing">"</span></span><span class="comma">:</span> #{node(value)}}
+          row = %Q{<span class="string key"><span class="control quote opening">"</span>#{key}<span class="control quote closing">"</span></span><span class="control colon">:</span> #{node(value)}}
 
           # Hopefully most keys will be sane since there are probably JSON
           row = %Q{<span class="key-#{key}">#{row}</span>}
 
           rows << tab + row
         end
-        string << rows.join(%Q{<span class="comma">,</span>\n})
+        string << rows.join(%Q{<span class="control comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
-          string << %Q[\n#{tab}<span class="curley-bracket closing">}</span>]
+          string << %Q[\n#{tab}<span class="control curley-bracket closing">}</span>]
         end
 
         string
 
       when Array
-        return omit_container ? '' : '<span class="square-bracket opening">[</span><span class="square-bracket closing">]</span>' if object.length == 0
+        return omit_container ? '' : '<span class="control square-bracket opening">[</span><span class="control square-bracket closing">]</span>' if object.length == 0
         string = if omit_container
           ''
         else
           @indent += 1
-          %Q{<span class="square-bracket opening">[</span>\n}
+          %Q{<span class="control square-bracket opening">[</span>\n}
         end
 
         rows = []
@@ -125,11 +125,11 @@ module Pizzazz
           rows << tab + (object[0].is_a?(Hash) ? "{ #{@array_omission} }" : @array_omission)
         end
 
-        string << rows.join(%Q{<span class="comma">,</span>\n})
+        string << rows.join(%Q{<span class="control comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
-          string << %Q{\n#{tab}<span class="square-bracket closing">]</span>}
+          string << %Q{\n#{tab}<span class="control square-bracket closing">]</span>}
         end
 
         string
