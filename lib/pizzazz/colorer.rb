@@ -37,7 +37,7 @@ module Pizzazz
     URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
 
     def tab
-      @tab * @indent
+      %Q{<span class="tab">#{@tab * @indent}</span>}
     end
 
     def truncate(string)
@@ -53,9 +53,9 @@ module Pizzazz
       case object
       when String
         if @detect_links && is_link?(object)
-          %Q{<span class="string link"><a href="#{object}" rel="external">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</a></span>}
+          %Q{<span class="string link"><a href="#{object}" rel="external"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></a></span>}
         else
-          %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
+          %Q{<span class="string"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></span>}
         end
 
       when Time
@@ -74,13 +74,13 @@ module Pizzazz
         %Q{<span class="number">#{object}</span>}
 
       when Hash
-        return omit_container ? '' : '{}' if object.length == 0
+        return omit_container ? '' : '<span class="curly-bracket opening">{</span><span class="curly-bracket closing">}</span>' if object.length == 0
 
         string = if omit_container
           ''
         else
           @indent += 1
-          "{\n"
+          %Q[<span class="curly-brace opening">{</span>\n]
         end
 
         rows = []
@@ -90,14 +90,14 @@ module Pizzazz
 
         keys.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
-          row = %Q{<span class="string key">"#{key}"</span>: #{node(value)}}
+          row = %Q{<span class="string key"><span class="quote opening">"</span>#{key}<span class="quote closing">"</span></span><span class="comma">:</span> #{node(value)}}
 
           # Hopefully most keys will be sane since there are probably JSON
           row = %Q{<span class="key-#{key}">#{row}</span>}
 
           rows << tab + row
         end
-        string << rows.join(",\n")
+        string << rows.join(%Q{<span class="comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
@@ -107,12 +107,12 @@ module Pizzazz
         string
 
       when Array
-        return omit_container ? '' : '[]' if object.length == 0
+        return omit_container ? '' : '<span class="square-bracket opening">[</span><span class="square-bracket closing">]</span>' if object.length == 0
         string = if omit_container
           ''
         else
           @indent += 1
-          "[\n"
+          "<span class="square-bracket opening">[</span>\n"
         end
 
         rows = []
@@ -125,11 +125,11 @@ module Pizzazz
           rows << tab + (object[0].is_a?(Hash) ? "{ #{@array_omission} }" : @array_omission)
         end
 
-        string << rows.join(",\n")
+        string << rows.join(%Q{<span class="comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
-          string << "\n#{tab}]"
+          string << %Q{\n#{tab}<span class="square-bracket closing">]</span>}
         end
 
         string
