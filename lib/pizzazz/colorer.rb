@@ -80,7 +80,7 @@ module Pizzazz
           ''
         else
           @indent += 1
-          %Q[<span class="curly-brace opening">{</span>\n]
+          %Q[<span class="curly-bracket opening">{</span>\n]
         end
 
         rows = []
@@ -101,7 +101,7 @@ module Pizzazz
 
         unless omit_container
           @indent -= 1
-          string << "\n#{tab}}"
+          string << %Q[\n#{tab}<span class="curley-bracket closing">}</span>]
         end
 
         string
