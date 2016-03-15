@@ -28,8 +28,9 @@ module Pizzazz
       return output unless @prefix
 
       # Add prefix
+      prefix = %Q{<span class="prefix">#{@prefix}</span>}
       lines = output.split("\n")
-      @prefix + lines.join("\n#{@prefix}")
+      prefix + lines.join("\n#{prefix}")
     end
 
   private
@@ -37,7 +38,7 @@ module Pizzazz
     URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
 
     def tab
-      @tab * @indent
+      %Q{<span class="control tab">#{@tab * @indent}</span>}
     end
 
     def truncate(string)
@@ -53,9 +54,9 @@ module Pizzazz
       case object
       when String
         if @detect_links && is_link?(object)
-          %Q{<span class="string link"><a href="#{object}" rel="external">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</a></span>}
+          %Q{<span class="string link"><a href="#{object}" rel="external"><span class="quote opening">"</span><span class="text">#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}</span><span class="quote closing">"</span></a></span>}
         else
-          %Q{<span class="string">"#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}"</span>}
+          %Q{<span class="string"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></span>}
         end
 
       when Time
@@ -74,13 +75,13 @@ module Pizzazz
         %Q{<span class="number">#{object}</span>}
 
       when Hash
-        return omit_container ? '' : '{}' if object.length == 0
+        return omit_container ? '' : '<span class="control curly-bracket opening">{</span><span class="control curly-bracket closing">}</span>' if object.length == 0
 
         string = if omit_container
           ''
         else
           @indent += 1
-          "{\n"
+          %Q[<span class="control curly-bracket opening">{</span>\n]
         end
 
         rows = []
@@ -90,24 +91,29 @@ module Pizzazz
 
         keys.each do |key|
           value = (object[key] != nil ? object[key] : object[key.to_sym])
-          rows << %Q{#{tab}<span class="string key">"#{key}"</span>: #{node(value)}}
+          row = %Q{<span class="string key"><span class="control quote opening">"</span>#{key}<span class="control quote closing">"</span></span><span class="control colon">:</span> #{node(value)}}
+
+          # Hopefully most keys will be sane since there are probably JSON
+          row = %Q{<span class="key-#{key}">#{row}</span>}
+
+          rows << tab + row
         end
-        string << rows.join(",\n")
+        string << rows.join(%Q{<span class="control comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
-          string << "\n#{tab}}"
+          string << %Q[\n#{tab}<span class="control curley-bracket closing">}</span>]
         end
 
         string
 
       when Array
-        return omit_container ? '' : '[]' if object.length == 0
+        return omit_container ? '' : '<span class="control square-bracket opening">[</span><span class="control square-bracket closing">]</span>' if object.length == 0
         string = if omit_container
           ''
         else
           @indent += 1
-          "[\n"
+          %Q{<span class="control square-bracket opening">[</span>\n}
         end
 
         rows = []
@@ -117,14 +123,14 @@ module Pizzazz
         end
 
         if @array_limit > 0 and object.length > @array_limit
-          rows << tab + (object[0].is_a?(Hash) ? "{ #{@array_omission} }" : @array_omission)
+          rows << tab + (object[0].is_a?(Hash) ? %Q[<span class="control curley-bracket opening">{</span> <span class="array-omission">#{@array_omission}</span> <span class="control curley-bracket closing">}</span>] : %Q{<span class="array-omission">#{@array_omission}</span>})
         end
 
-        string << rows.join(",\n")
+        string << rows.join(%Q{<span class="control comma">,</span>\n})
 
         unless omit_container
           @indent -= 1
-          string << "\n#{tab}]"
+          string << %Q{\n#{tab}<span class="control square-bracket closing">]</span>}
         end
 
         string
