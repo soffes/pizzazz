@@ -28,8 +28,9 @@ module Pizzazz
       return output unless @prefix
 
       # Add prefix
+      prefix = %Q{<span class="prefix">#{@prefix}</span>}
       lines = output.split("\n")
-      @prefix + lines.join("\n#{@prefix}")
+      prefix + lines.join("\n#{prefix}")
     end
 
   private
@@ -122,7 +123,7 @@ module Pizzazz
         end
 
         if @array_limit > 0 and object.length > @array_limit
-          rows << tab + (object[0].is_a?(Hash) ? "{ #{@array_omission} }" : @array_omission)
+          rows << tab + (object[0].is_a?(Hash) ? %Q[<span class="control curley-bracket opening">{</span> <span class="array-omission">#{@array_omission}</span> <span class="control curley-bracket closing">}</span>] : %Q{<span class="array-omission">#{@array_omission}</span>})
         end
 
         string << rows.join(%Q{<span class="control comma">,</span>\n})
