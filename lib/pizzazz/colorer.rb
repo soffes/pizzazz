@@ -18,6 +18,7 @@ module Pizzazz
       @omit_root_container = options[:omit_root_container] || false
       @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
       @sort_keys = options[:sort_keys] == nil ? true : options[:sort_keys]
+      @class_name_prefix = options[:class_name_prefix] || ''
     end
 
     def ify
@@ -28,7 +29,7 @@ module Pizzazz
       return output unless @prefix
 
       # Add prefix
-      prefix = %Q{<span class="prefix">#{@prefix}</span>}
+      prefix = span(@prefix, 'prefix')
       lines = output.split("\n")
       prefix + lines.join("\n#{prefix}")
     end
@@ -142,6 +143,17 @@ module Pizzazz
       scheme == 'http' || scheme == 'https'
     rescue
       false
+    end
+
+    def span(content, class_names = nil)
+      class_names = class_names.split(' ') if class_names.is_a?(String)
+      class_names = if class_names.empty?
+        ''
+      else
+        class_names = %( class="#{class_names.map { |name| @class_name_prefix + name }.join(' ')}")
+      end
+
+      %(<span#{class_names}>#{content}</span>)
     end
   end
 end
