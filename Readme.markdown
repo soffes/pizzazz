@@ -31,7 +31,13 @@ Pizzazzifing an object is simple:
 ``` ruby
 object = { name: 'Sam Soffes', website: 'http://soff.es' }
 Pizzazz.ify(object)
-#=> "{\n  <span class=\"string key\">\"name\"</span>: <span class=\"string\">\"Sam Soffes\"</span>,\n  <span class=\"string key\">\"website\"</span>: <span class=\"string\">\"http://soff.es\"</span>\n}"
+```
+
+``` html
+<span class="dictionary"><span class="control bracket curly opening">{</span>
+<span class="control tab">  </span><span class="key-name"><span class="string key"><span class="control quote opening">"</span><span class="text">name</span><span class="control quote closing">"</span></span><span class="control colon">:</span> <span class="string"><span class="control quote opening">"</span><span class="text">Sam Soffes</span><span class="control quote closing">"</span></span></span><span class="control comma">,</span>
+<span class="control tab">  </span><span class="key-website"><span class="string key"><span class="control quote opening">"</span><span class="text">website</span><span class="control quote closing">"</span></span><span class="control colon">:</span> <span class="string link"><a href="http://soff.es" rel="external"><span class="control quote opening">"</span><span class="text">http://soff.es</span><span class="control quote closing">"</span></a></span></span>
+<span class="control tab"></span><span class="control bracket curly closing">}</span></span>
 ```
 
 You can optionally limit arrays or values as well:
@@ -46,10 +52,9 @@ This will add an ellipses after the first element and truncate values longer tha
 Pizzazz.ify(all_of_the_things, array_limit: 'etc', value_omission: '... (continued)')
 ```
 
-You can also supply `omit_root_container` and `prefix`, a string that's added to the beginning of each line of the output, is really nice for doing custom things. Both options can be used independently as well.
+You can also supply `prefix` to add a string to the beginning of each line of the output. You can also supply `class_name_prefix` to prefix the classes that are generated.
 
 By defauly, hash keys are sorted alphabetically. You can disable this with `sort_keys: false`.
-
 
 ### HTML
 
