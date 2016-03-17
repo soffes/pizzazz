@@ -4,6 +4,7 @@ require 'erb'
 require 'uri'
 
 module Pizzazz
+  # A class for turning JSON into HTML.
   class Colorer
     def initialize(object, options = nil)
       options ||= {}
@@ -15,8 +16,8 @@ module Pizzazz
       @value_omission = options[:value_omission] || '…'
       @tab = options[:tab] || '  '
       @prefix = options[:prefix]
-      @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
-      @sort_keys = options[:sort_keys] == nil ? true : options[:sort_keys]
+      @detect_links = options[:detect_links].nil? ? true : options[:detect_links]
+      @sort_keys = options[:sort_keys].nil? ? true : options[:sort_keys]
       @class_name_prefix = options[:class_name_prefix] || ''
     end
 
@@ -24,7 +25,7 @@ module Pizzazz
       return '' unless @object
 
       # Parse
-      output = node(@object, true)
+      output = node(@object)
       return output unless @prefix
 
       # Add prefix
@@ -33,9 +34,9 @@ module Pizzazz
       prefix + lines.join("\n#{prefix}")
     end
 
-  private
+    private
 
-    URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
+    URL_PATTERN = %r{^(https?://)?([\da-z\.-]+)\.([a-z\.]{2,})([/\w \.-]*)*/?$}i
 
     def tab
       span @tab * @indent, 'control tab'
@@ -48,10 +49,10 @@ module Pizzazz
       (text.length > @value_limit ? text[0...stop] + span(@value_omission, 'omission') : text).to_s
     end
 
-    def node(object, root = false)
+    def node(object)
       case object
       when String
-        @detect_links && is_link?(object) ? link(object) : string(object)
+        @detect_links && link?(object) ? link(object) : string(object)
       when Time
         span object.to_json, 'string time'
       when TrueClass
@@ -69,7 +70,7 @@ module Pizzazz
       end
     end
 
-    def is_link?(string)
+    def link?(string)
       scheme = URI.parse(string).scheme
       scheme == 'http' || scheme == 'https'
     rescue
@@ -81,7 +82,7 @@ module Pizzazz
       class_names = if class_names.empty?
         ''
       else
-        class_names = %( class="#{class_names.map { |name| @class_name_prefix + name }.join(' ')}")
+        %( class="#{class_names.map { |name| @class_name_prefix + name }.join(' ')}")
       end
 
       %(<span#{class_names}>#{content}</span>)
@@ -108,7 +109,7 @@ module Pizzazz
     end
 
     def hash(object)
-      return span(opening_curly + closing_curly, 'dictionary') if object.length == 0
+      return span(opening_curly + closing_curly, 'dictionary') if object.empty?
 
       @indent += 1
       string = opening_curly + "\n"
@@ -119,7 +120,7 @@ module Pizzazz
       keys.sort! if @sort_keys
 
       keys.each do |key|
-        value = (object[key] != nil ? object[key] : object[key.to_sym])
+        value = (!object[key].nil? ? object[key] : object[key.to_sym])
         row = %(#{span(text(key), 'string key') + colon} #{node(value)})
 
         # Wrap row in with class for key.
@@ -136,7 +137,7 @@ module Pizzazz
     end
 
     def array(object)
-      return span(opening_square + closing_square, 'array') if object.length == 0
+      return span(opening_square + closing_square, 'array') if object.empty?
 
       @indent += 1
       string = opening_square + "\n"
@@ -147,7 +148,7 @@ module Pizzazz
         rows << tab + node(value)
       end
 
-      if @array_limit > 0 and object.length > @array_limit
+      if @array_limit > 0 && object.length > @array_limit
         rows << tab + (object[0].is_a?(Hash) ? %(#{opening_curly} #{array_omission} #{closing_curly}) : array_omission)
       end
 
