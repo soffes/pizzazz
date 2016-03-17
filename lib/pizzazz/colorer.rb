@@ -15,7 +15,6 @@ module Pizzazz
       @value_omission = options[:value_omission] || '…'
       @tab = options[:tab] || '  '
       @prefix = options[:prefix]
-      @omit_root_container = options[:omit_root_container] || false
       @detect_links = options[:detect_links] == nil ? true : options[:detect_links]
       @sort_keys = options[:sort_keys] == nil ? true : options[:sort_keys]
       @class_name_prefix = options[:class_name_prefix] || ''
@@ -39,7 +38,7 @@ module Pizzazz
     URL_PATTERN = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,})([\/\w \.-]*)*\/?$/i
 
     def tab
-      %Q{<span class="control tab">#{@tab * @indent}</span>}
+      span @tab * @indent, 'control tab'
     end
 
     def truncate(string)
@@ -50,91 +49,23 @@ module Pizzazz
     end
 
     def node(object, root = false)
-      omit_container = root && @omit_root_container
-
       case object
       when String
-        if @detect_links && is_link?(object)
-          %Q{<span class="string link"><a href="#{object}" rel="external"><span class="quote opening">"</span><span class="text">#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}</span><span class="quote closing">"</span></a></span>}
-        else
-          %Q{<span class="string"><span class="quote opening">"</span>#{truncate(::ERB::Util.h(object.gsub("\n", '\n')))}<span class="quote closing">"</span></span>}
-        end
-
+        @detect_links && is_link?(object) ? link(object) : string(object)
       when Time
-        %Q{<span class="string">#{object.to_json}</span>}
-
+        span object.to_json, 'string time'
       when TrueClass
-        %Q{<span class="constant">true</span>}
-
+        span 'true', 'boolean true'
       when FalseClass
-        %Q{<span class="constant">false</span>}
-
+        span 'false', 'boolean false'
       when NilClass
-        %Q{<span class="null">null</span>}
-
+        span 'null', 'null'
       when Numeric
-        %Q{<span class="number">#{object}</span>}
-
+        span object, 'number'
       when Hash
-        return omit_container ? '' : '<span class="control curly-bracket opening">{</span><span class="control curly-bracket closing">}</span>' if object.length == 0
-
-        string = if omit_container
-          ''
-        else
-          @indent += 1
-          %Q[<span class="control curly-bracket opening">{</span>\n]
-        end
-
-        rows = []
-        keys = object.keys.collect(&:to_s)
-
-        keys.sort! if @sort_keys
-
-        keys.each do |key|
-          value = (object[key] != nil ? object[key] : object[key.to_sym])
-          row = %Q{<span class="string key"><span class="control quote opening">"</span>#{key}<span class="control quote closing">"</span></span><span class="control colon">:</span> #{node(value)}}
-
-          # Hopefully most keys will be sane since there are probably JSON
-          row = %Q{<span class="key-#{key}">#{row}</span>}
-
-          rows << tab + row
-        end
-        string << rows.join(%Q{<span class="control comma">,</span>\n})
-
-        unless omit_container
-          @indent -= 1
-          string << %Q[\n#{tab}<span class="control curley-bracket closing">}</span>]
-        end
-
-        string
-
+        hash object
       when Array
-        return omit_container ? '' : '<span class="control square-bracket opening">[</span><span class="control square-bracket closing">]</span>' if object.length == 0
-        string = if omit_container
-          ''
-        else
-          @indent += 1
-          %Q{<span class="control square-bracket opening">[</span>\n}
-        end
-
-        rows = []
-        array = @array_limit > 0 ? object[0...@array_limit] : object
-        array.each do |value|
-          rows << tab + node(value)
-        end
-
-        if @array_limit > 0 and object.length > @array_limit
-          rows << tab + (object[0].is_a?(Hash) ? %Q[<span class="control curley-bracket opening">{</span> <span class="array-omission">#{@array_omission}</span> <span class="control curley-bracket closing">}</span>] : %Q{<span class="array-omission">#{@array_omission}</span>})
-        end
-
-        string << rows.join(%Q{<span class="control comma">,</span>\n})
-
-        unless omit_container
-          @indent -= 1
-          string << %Q{\n#{tab}<span class="control square-bracket closing">]</span>}
-        end
-
-        string
+        array object
       end
     end
 
@@ -154,6 +85,108 @@ module Pizzazz
       end
 
       %(<span#{class_names}>#{content}</span>)
+    end
+
+    def array_omission
+      span @array_omission, 'omission array'
+    end
+
+    def text(object)
+      object = truncate(::ERB::Util.h(object.gsub("\n", '\n')))
+      opening_quote + span(object, 'text') + closing_quote
+    end
+
+    def string(object, class_name = 'string')
+      span text(object), class_name
+    end
+
+    def link(object)
+      a = %(<a href="#{object}" rel="external">#{text(object)}</a>)
+      span a, 'string link'
+    end
+
+    def hash(object)
+      return span(opening_curly + closing_curly, 'dictionary') if object.length == 0
+
+      @indent += 1
+      string = opening_curly + "\n"
+
+      rows = []
+      keys = object.keys.collect(&:to_s)
+
+      keys.sort! if @sort_keys
+
+      keys.each do |key|
+        value = (object[key] != nil ? object[key] : object[key.to_sym])
+        row = %(#{string(key, 'string key') + colon} #{node(value)})
+
+        # Wrap row in with class for key.
+        # Hopefully most keys will be sane since it's probably JSON.
+        row = tab + span(row, "key-#{key}")
+        rows << row
+      end
+      string << rows.join(comma + "\n")
+
+      @indent -= 1
+      string << "\n" + tab + closing_curly
+
+      span string, 'dictionary'
+    end
+
+    def array(object)
+      return span(opening_square + closing_square, 'array') if object.length == 0
+
+      @indent += 1
+      string = opening_square + "\n"
+
+      rows = []
+      array = @array_limit > 0 ? object[0...@array_limit] : object
+      array.each do |value|
+        rows << tab + node(value)
+      end
+
+      if @array_limit > 0 and object.length > @array_limit
+        rows << tab + (object[0].is_a?(Hash) ? %(#{opening_curly} #{array_omission} #{closing_curly}) : array_omission)
+      end
+
+      string << rows.join(comma + "\n")
+
+      @indent -= 1
+      string << "\n" + tab + closing_square
+
+      span string, 'array'
+    end
+
+    def opening_quote
+      span '"', 'control quote opening'
+    end
+
+    def closing_quote
+      span '"', 'control quote closing'
+    end
+
+    def opening_curly
+      span '{', 'control bracket curly opening'
+    end
+
+    def closing_curly
+      span '}', 'control bracket curly closing'
+    end
+
+    def opening_square
+      span '[', 'control bracket square opening'
+    end
+
+    def closing_square
+      span ']', 'control bracket square closing'
+    end
+
+    def comma
+      span ',', 'control comma'
+    end
+
+    def colon
+      span ':', 'control colon'
     end
   end
 end
