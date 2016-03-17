@@ -45,7 +45,7 @@ module Pizzazz
       return string if @value_limit < 1
       text = string.dup
       stop = @value_limit - @value_omission.length
-      (text.length > @value_limit ? text[0...stop] + @value_omission : text).to_s
+      (text.length > @value_limit ? text[0...stop] + span(@value_omission, 'omission') : text).to_s
     end
 
     def node(object, root = false)
@@ -91,13 +91,15 @@ module Pizzazz
       span @array_omission, 'omission array'
     end
 
-    def text(object)
-      object = truncate(::ERB::Util.h(object.gsub("\n", '\n')))
+    def text(object, should_truncate = false)
+      object = object.gsub("\n", '\n')
+      object = ::ERB::Util.h(object)
+      object = truncate(object) if should_truncate
       opening_quote + span(object, 'text') + closing_quote
     end
 
-    def string(object, class_name = 'string')
-      span text(object), class_name
+    def string(object)
+      span text(object, true), 'string'
     end
 
     def link(object)
@@ -118,7 +120,7 @@ module Pizzazz
 
       keys.each do |key|
         value = (object[key] != nil ? object[key] : object[key.to_sym])
-        row = %(#{string(key, 'string key') + colon} #{node(value)})
+        row = %(#{span(text(key), 'string key') + colon} #{node(value)})
 
         # Wrap row in with class for key.
         # Hopefully most keys will be sane since it's probably JSON.
