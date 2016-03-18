@@ -93,7 +93,7 @@ module Pizzazz
     end
 
     def text(object, should_truncate = false)
-      object = object.gsub("\n", '\n')
+      object = object.to_json.sub(/\A"/, '').sub(/"\Z/, '')
       object = ::ERB::Util.h(object)
       object = truncate(object) if should_truncate
       opening_quote + span(object, 'text') + closing_quote
